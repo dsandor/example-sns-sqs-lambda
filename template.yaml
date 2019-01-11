@@ -1,12 +1,12 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Resources:
-  MyLambdaFunction:
+  IngestFunction:
     Type: AWS::Serverless::Function
     Properties:
       Handler: my-lambda.handler
       Runtime: nodejs8.10
-      Role: arn:aws:iam::973435562475:role/basic-lambda-role
+      Role: arn:aws:iam::[your-account-number]:role/acct-managed/[an-existing-lambda-role]
       CodeUri: ./
       Environment:
         Variables:
