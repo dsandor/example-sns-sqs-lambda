@@ -1,0 +1,53 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  MyLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: my-lambda.handler
+      Runtime: nodejs8.10
+      Role: arn:aws:iam::973435562475:role/basic-lambda-role
+      CodeUri: ./
+      Environment:
+        Variables:
+          MY_SNS_TOPIC_ARN: !Ref myTopic
+          MY_SQS_QUEUE_URL: !Ref myQueue
+      Events:
+        SqsJobQueue:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt myQueue.Arn
+            BatchSize: 1
+
+
+  # sns topics that the lambdas depend on
+  myTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: "my-topic"
+
+  # sqs queues that the lambdas use
+  myQueue:
+    Type: AWS::SQS::Queue
+
+  myQueuePolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      Queues:
+        - !Ref myQueue
+      PolicyDocument:
+        Statement:
+          Effect: Allow
+          Principal: "*"
+          Action: "sqs:*"
+          Resource: "*"
+
+
+  myQueueToSnsSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint: !GetAtt myQueue.Arn
+      Protocol: sqs
+      RawMessageDelivery: true
+      TopicArn: !Ref myTopic
+

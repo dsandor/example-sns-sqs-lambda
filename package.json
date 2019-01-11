@@ -1,0 +1,12 @@
+{
+  "name": "sns-sqs-lambda",
+  "version": "1.0.0",
+  "description": "Example project showing how to make an SNS Topic, SQS Queue, and Lambda that is triggered by a new SQS Message.",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "package": "sam package --template-file template.yaml --s3-bucket dsandor-blog-examples --output-template-file packaged.yaml",
+    "deploy": "sam deploy --template-file ./packaged.yaml --stack-name my-sns-sqs-lambda-example --capabilities CAPABILITY_IAM",
+    "package-deploy": "yarn package ; yarn deploy"
+  }
+}
